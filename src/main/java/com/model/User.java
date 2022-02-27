@@ -1,5 +1,7 @@
 package com.model;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 public class User {
 
     private String email;
@@ -31,5 +33,13 @@ public class User {
     public User setName(String name) {
         this.name = name;
         return this;
+    }
+
+    public static User getRandomUser(){
+        User user = new User();
+        user.setEmail(RandomStringUtils.randomAlphabetic(10)+"@yandex.ru");
+        user.setPassword(RandomStringUtils.randomAlphabetic(10));
+        user.setName(RandomStringUtils.randomAlphabetic(10));
+        return user;
     }
 }
