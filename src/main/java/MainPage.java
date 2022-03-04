@@ -4,11 +4,11 @@ import org.openqa.selenium.support.How;
 
 public class MainPage {
 
-    public static String getMainPageURL() {
-        return MainPageURL;
+    public static String getMAIN_PAGE_URL() {
+        return MAIN_PAGE_URL;
     }
 
-    private final static String MainPageURL = "https://stellarburgers.nomoreparties.site/";
+    private final static String MAIN_PAGE_URL = "https://stellarburgers.nomoreparties.site/";
 
     public SelenideElement getOrderButton() {
         return orderButton;
@@ -73,4 +73,11 @@ public class MainPage {
 
     @FindBy(how = How.XPATH, using = "//h2[contains(text(), 'Начинки')]")
     private SelenideElement ingredientSection;
+
+    public SelenideElement getLogOutButton() {
+        return logOutButton;
+    }
+
+    @FindBy(how = How.XPATH, using = "//li[@class='Account_listItem__35dAP']/button[text()='Выход']")
+    private SelenideElement logOutButton;
 }

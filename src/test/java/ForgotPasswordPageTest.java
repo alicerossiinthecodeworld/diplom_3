@@ -1,4 +1,5 @@
 import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,16 +31,17 @@ public class ForgotPasswordPageTest {
     @Before
     public void setUp() {
         System.setProperty("webdriver.chrome.driver", driverPath);
-        forgotPasswordPage = open(ForgotPasswordPage.getForgotPasswordURL(), ForgotPasswordPage.class);
+        forgotPasswordPage = open(ForgotPasswordPage.getFORGOT_PASSWORD_URL(), ForgotPasswordPage.class);
     }
 
     @After
-    public void TearDown(){
+    public void tearDown(){
         webdriver().driver().close();
     }
 
     @Test
-    public void loginButtonLeadsToLoginPage() throws InterruptedException {
+    @DisplayName("тест логина через форму восстановления пароля")
+    public void loginButtonLeadsToLoginPage(){
         forgotPasswordPage.clickLoginButton();
         assertEquals("https://stellarburgers.nomoreparties.site/login", WebDriverRunner.getWebDriver().getCurrentUrl());
     }

@@ -1,13 +1,13 @@
 import com.UserOperations;
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.webdriver;
@@ -28,16 +28,13 @@ public class MyAccountPageTest {
                 {"drivers/chromedriver"}
         };
     }
-
-    private MainPage mainPage;
-    private LoginPage loginPage;
     private UserOperations userOperations;
     private MyAccount myAccount;
     @Before
     public void setUp() {
         System.setProperty("webdriver.chrome.driver", driverPath);
-        mainPage = open(MainPage.getMainPageURL(), MainPage.class);
         userOperations = new UserOperations();
+        myAccount = open(myAccount.getMainPageUrl(), MyAccount.class);
     }
     @After
     public void TearDown(){
@@ -45,53 +42,32 @@ public class MyAccountPageTest {
     }
 
     @Test
-    public void logOutTest() throws InterruptedException {
-        accessAccount();
+    @Step("тест выхода из аккаунта")
+    public void logOutTest() {
+        myAccount.accessAccount();
         myAccount.clickLog0utButton();
-        wait5000();
+        myAccount.getPasswordField().shouldBe(Condition.visible);
         assertEquals("https://stellarburgers.nomoreparties.site/login", WebDriverRunner.getWebDriver().getCurrentUrl());
         userOperations.delete();
     }
 
     @Test
+    @Step("тест перехода по кнопке лого")
     public void logoButtonTest() throws InterruptedException {
-        accessAccount();
+        myAccount.accessAccount();
         myAccount.clickLogoButton();
-        wait5000();
+        myAccount.getOrderButton().shouldBe(Condition.visible);
         assertEquals("https://stellarburgers.nomoreparties.site/", WebDriverRunner.getWebDriver().getCurrentUrl());
         userOperations.delete();
     }
 
     @Test
+    @DisplayName("тест перехода по кнопке конструктора")
     public void constructorButtonTest() throws InterruptedException {
-        accessAccount();
+        myAccount.accessAccount();
         myAccount.clickConstructorButton();
-        wait5000();
+        myAccount.getOrderButton().shouldBe(Condition.visible);
         assertEquals("https://stellarburgers.nomoreparties.site/", WebDriverRunner.getWebDriver().getCurrentUrl());
         userOperations.delete();
-    }
-
-
-    @Step("access to my account")
-    public void accessAccount() throws InterruptedException {
-        mainPage.clickAccountButton();
-        Map<String, String> userData = userOperations.register();
-        loginPage = open(LoginPage.getLOGIN_URL(), LoginPage.class);
-        login(userData.get("email"), userData.get("password"));
-        loginPage.clickLoginButton();
-        myAccount = open("https://stellarburgers.nomoreparties.site/", MyAccount.class);
-        myAccount.clickAccountButton();
-    }
-
-    @Step("login")
-    public void login(String email, String password) {
-        loginPage.setEmailField(email);
-        loginPage.setPasswordField(password);
-        loginPage.clickLoginButton();
-    }
-
-    @Step("wait")
-    public void wait5000() throws InterruptedException {
-        Thread.sleep(5000);
     }
 }

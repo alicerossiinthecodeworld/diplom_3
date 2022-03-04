@@ -1,7 +1,7 @@
 import com.UserOperations;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.WebDriverRunner;
-import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +33,12 @@ public class MainPageTest {
     private MainPage mainPage;
     private LoginPage loginPage;
     private UserOperations userOperations;
-    private MyAccount myAccount;
+
     @Before
     public void setUp() {
         System.setProperty("webdriver.chrome.driver", driverPath);
-        mainPage = open(MainPage.getMainPageURL(), MainPage.class);
+        mainPage = open(MainPage.getMAIN_PAGE_URL(), MainPage.class);
         userOperations = new UserOperations();
-        myAccount = new MyAccount();
     }
 
     @After
@@ -48,30 +47,34 @@ public class MainPageTest {
     }
 
     @Test
+    @DisplayName("логин по кнопке входа на главной странице")
     public void loginButtonOpensLoginPageTest() {
         mainPage.clickLoginButton();
         assertEquals(LoginPage.getLOGIN_URL(), WebDriverRunner.getWebDriver().getCurrentUrl());
     }
 
     @Test
+    @DisplayName("вход через кнопку мой аккаунт")
     public void myAccountButtonOpensLoginPageTest() throws InterruptedException {
         mainPage.clickAccountButton();
         assertEquals(LoginPage.getLOGIN_URL(), WebDriverRunner.getWebDriver().getCurrentUrl());
     }
 
     @Test
-    public void myAccountButtonOpensAccountAfterRegTest() throws InterruptedException {
+    @DisplayName("мой аккаунт открывается после регистрации")
+    public void myAccountButtonOpensAccountAfterRegTest(){
         mainPage.clickAccountButton();
         Map<String, String> userData = userOperations.register();
         loginPage = open(LoginPage.getLOGIN_URL(), LoginPage.class);
-        login(userData.get("email"), userData.get("password"));
+        loginPage.login(userData.get("email"), userData.get("password"));
         mainPage.clickAccountButton();
-        wait5000();
+        mainPage.getLogOutButton().shouldBe(Condition.visible);
         assertEquals("https://stellarburgers.nomoreparties.site/account/profile", WebDriverRunner.getWebDriver().getCurrentUrl());
         userOperations.delete();
     }
 
     @Test
+    @DisplayName("тест фильтра булочки")
     public void bunFilterTest(){
         mainPage.clickSauceButton();
         mainPage.clickBunButton();
@@ -79,39 +82,16 @@ public class MainPageTest {
     }
 
     @Test
+    @DisplayName("тест фильтра соусов")
     public void sauceFilterTest(){
         mainPage.clickSauceButton();
         mainPage.getSauceSection().shouldBe(Condition.visible);
     }
 
     @Test
+    @DisplayName("тест фильтра начинки")
     public void ingredientFilterTest(){
         mainPage.clickIngredientButton();
         mainPage.getIngredientSection().shouldBe(Condition.visible);
-    }
-
-
-
-    @Step("setEmailField")
-    public void setEmailField(String email){
-        loginPage.setEmailField(email);
-    }
-
-    @Step("setPasswordField")
-    public void setPassField(String password){
-        loginPage.setPasswordField(password);
-    }
-
-
-    @Step("login")
-    public void login(String email, String password) {
-        loginPage.setEmailField(email);
-        loginPage.setPasswordField(password);
-        loginPage.clickLoginButton();
-    }
-
-    @Step("wait")
-    public void wait5000() throws InterruptedException {
-        Thread.sleep(5000);
     }
 }

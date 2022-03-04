@@ -2,9 +2,8 @@ import com.UserOperations;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.WebDriverRunner;
 import com.model.User;
-import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +35,7 @@ public class LoginPageTest {
     private LoginPage loginPage;
     private MainPage mainPage;
     private MyAccount myAccount;
+    private final String MAIN_PAGE_URL = "https://stellarburgers.nomoreparties.site/";
     @Before
     public void setUp() {
         System.setProperty("webdriver.chrome.driver", driverPath);
@@ -47,58 +47,30 @@ public class LoginPageTest {
     }
 
     @After
-    public void TearDown(){
+    public void tearDown(){
         webdriver().driver().close();
     }
 
     @Test
+    @DisplayName("тест поля почты")
     public void emailFieldTest(){
-        setEmailField("alicerossi@yandex.ru");
+        loginPage.setEmailField("alicerossi@yandex.ru");
         assertEquals("alicerossi@yandex.ru", loginPage.getEmailField().getValue());
     }
     @Test
+    @DisplayName("тест поля пароля")
     public void passwordFieldTest(){
-        setPassField("sEkret123");
+        loginPage.setPasswordField("sEkret123");
         assertEquals("sEkret123", loginPage.getPasswordField().getValue());
     }
 
     @Test
-    public void loginSuccess() throws InterruptedException {
+    @DisplayName("тест логина")
+    public void loginSuccess() {
         Map<String, String>  userData = userOperations.register();
-        login(userData.get("email"), userData.get("password"));
-        wait1000();
-        assertEquals("https://stellarburgers.nomoreparties.site/", WebDriverRunner.getWebDriver().getCurrentUrl());
-        deleteUser();
-    }
-
-
-
-
-    @Step("setEmailField")
-    public void setEmailField(String email){
-        loginPage.setEmailField(email);
-    }
-
-    @Step("setPasswordField")
-    public void setPassField(String password){
-        loginPage.setPasswordField(password);
-    }
-
-
-    @Step("login")
-    public void login(String email, String password) {
-        loginPage.setEmailField(email);
-        loginPage.setPasswordField(password);
-        loginPage.clickLoginButton();
-    }
-
-    @Step("deleteUser")
-    public void deleteUser(){
+        loginPage.login(userData.get("email"), userData.get("password"));
+        loginPage.getOrderButton().shouldBe(Condition.visible);
+        assertEquals(MAIN_PAGE_URL, WebDriverRunner.getWebDriver().getCurrentUrl());
         userOperations.delete();
-    }
-
-    @Step("wait")
-    public void wait1000() throws InterruptedException {
-        Thread.sleep(1000);
     }
 }

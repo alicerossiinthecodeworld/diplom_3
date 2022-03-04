@@ -3,11 +3,11 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
 public class ForgotPasswordPage {
-    public static String getForgotPasswordURL() {
-        return ForgotPasswordURL;
+    public static String getFORGOT_PASSWORD_URL() {
+        return FORGOT_PASSWORD_URL;
     }
 
-    private static String ForgotPasswordURL = "https://stellarburgers.nomoreparties.site/forgot-password";
+    private static String FORGOT_PASSWORD_URL = "https://stellarburgers.nomoreparties.site/forgot-password";
 
     public void clickLoginButton(){
         loginButton.click();
